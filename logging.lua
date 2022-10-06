@@ -18,14 +18,12 @@ local loglevels = {
   ['help']   = { level = 7, color = '\aw', abbreviation = '[HELP%s]'  },
 }
 
-local defaultConfig = {
+local config = {
   usecolors = true,
   usetimestamp = false,
   loglevel = 'warn',
   separator = '::'
 }
-
-local config = defaultConfig
 
 local Logger = {}
 
