@@ -1,6 +1,5 @@
 --- @type Mq
 local mq = require('mq')
-local configuration = require('util.configuration')
 
 --[[ 
 \ab = black \ag = green \am = maroon \ao = orange \ap = purple \ar = red \at = cyan (or teal) \au = blue \aw = white \ax = default (which will do whatever the previous color was, the one before the last color change) \ay = yellow
@@ -26,7 +25,7 @@ local defaultConfig = {
   separator = '::'
 }
 
-local config = configuration.LoadConfig("logging", defaultConfig)
+local config = defaultConfig
 
 local Logger = {}
 
