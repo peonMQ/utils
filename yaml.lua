@@ -1,5 +1,5 @@
+local packageMan = require('mq/PackageMan')
 local file = require('file')
-local packageMan = require('mq.PackageMan')
 
 local lyaml = packageMan.Require('lyaml') -- https://github.com/gvvaughan/lyaml
 

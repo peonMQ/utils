@@ -9,9 +9,9 @@ end
 ---@param dataTypePath string
 ---@param depth integer
 local function listMembers(datatype, dataTypePath, depth)
-   local index = 1
-   while mq.TLO.Type(datatype).Member(index)() do
-      local member = mq.TLO.Type(datatype).Member(index)()
+  for i=1,300 do
+    if mq.TLO.Type(datatype).Member(i)() then
+      local member = mq.TLO.Type(datatype).Member(i)()
       local memberType = mq.gettype(mq.TLO.Me[member])
       local memberValue = nil
       if dataTypePath then
@@ -19,10 +19,10 @@ local function listMembers(datatype, dataTypePath, depth)
       elseif mq.TLO.Me[member] then
         memberValue = mq.TLO.Me[member]()
       end
-      printMemberItem(index, member, memberType, memberValue, depth)
+      printMemberItem(i, member, memberType, memberValue, depth)
       listMembers(memberType.Name(), member, depth + 1)
-      index = index + 1
    end
+  end
 end
 
 ---@param node table

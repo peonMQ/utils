@@ -86,22 +86,32 @@ local function Output(paramLogLevel, message, ...)
   end
 end
 
+---@param message string
+---@param ... string
 function Logger.Debug(message, ...)
   Output('debug', message, ...)
 end
 
+---@param message string
+---@param ... string
 function Logger.Info(message, ...)
   Output('info', message, ...)
 end
 
+---@param message string
+---@param ... string
 function Logger.Warn(message, ...)
   Output('warn', message, ...)
 end
 
+---@param message string
+---@param ... string
 function Logger.Error(message, ...)
   Output('error', message, ...)
 end
 
+---@param message string
+---@param ... string
 function Logger.Fatal(message, ...)
   Output('fatal', message, ...)
   Terminate()

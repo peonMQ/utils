@@ -1,4 +1,4 @@
-local packageMan = require('mq.PackageMan')
+local packageMan = require('mq/PackageMan')
 local lfs = packageMan.Require('luafilesystem', 'lfs')
 
 local windows = package.config:sub(1,1) == "\\"
