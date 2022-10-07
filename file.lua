@@ -94,7 +94,7 @@ local function writeAllText(filePath, text)
   return true
 end
 
----@param filePath any
+---@param filePath string
 ---@return boolean|nil
 local function ensurePathExists(filePath)
   return lfs.rmkdir(filePath)

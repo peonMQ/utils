@@ -1,9 +1,7 @@
 local luautils = require('util/lua')
 local jsonUtil = require('util/json')
 
-
 local next = next
-
 
 ---@param keys string[]
 ---@param config table

@@ -1,3 +1,6 @@
+local file = require('file')
+local luaTableConverter = require('utils/lua-table-converter')
+
 ---@generic T : table
 ---@param default T
 ---@param loaded T
@@ -34,9 +37,27 @@ local function split (inputstr, separator)
   return subStrings
 end
 
+---@generic T : table
+---@param filePath string
+---@return T
+local function loadTable(filePath)
+  local table_text = file.ReadAllText(filePath)
+  return luaTableConverter.fromString(table_text)
+end
+
+---@generic T : table
+---@param filePath string
+---@param table T
+local function saveTable(filePath, table)
+  local table_text = luaTableConverter.toString(table)
+  file.WriteAllText(filePath, table_text)
+end
+
 local utils = {
   LeftJoin = leftJoin,
-  Split = split
+  Split = split,
+  LoadTable = loadTable,
+  SaveTable = saveTable
 }
 
 return utils
