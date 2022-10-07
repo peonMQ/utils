@@ -1,6 +1,38 @@
 local file = require('file')
 local luaTableConverter = require('utils/lua-table-converter')
 
+---@class RunningDir
+local RunningDir = {scriptPath = ''}
+
+---@return RunningDir
+function RunningDir:new()
+  self.__index = self
+  local o = setmetatable({}, self)
+  o.scriptPath = (debug.getinfo(1, "S").source:sub(2)):match("(.*[\\|/]).*$")
+  return o
+end
+
+function RunningDir:AppendToPackagePath()
+  local package_path_inc = self.scriptPath .. '?.lua'
+  if not string.find(package.path, package_path_inc) then
+      package.path = package_path_inc .. ';' .. package.path
+  end
+end
+
+function RunningDir:RelativeToMQLuaPath()
+  local relativeUrl = (self.scriptPath:sub(0, #mq.luaDir) == mq.luaDir) and self.scriptPath:sub(#mq.luaDir+1) or self.scriptPath
+  if string.sub(relativeUrl, -1, -1) == "/" then
+    relativeUrl=string.sub(relativeUrl, 1, -2)
+  end
+
+  return relativeUrl
+end
+
+function RunningDir:GetRelativeToMQLuaPath(subDir)
+  local relativeUrl = self:RelativeToMQLuaPath()
+  return relativeUrl.."/"..subDir
+end
+
 ---@generic T : table
 ---@param default T
 ---@param loaded T
@@ -57,7 +89,8 @@ local utils = {
   LeftJoin = leftJoin,
   Split = split,
   LoadTable = loadTable,
-  SaveTable = saveTable
+  SaveTable = saveTable,
+  RunningDir = RunningDir
 }
 
 return utils
