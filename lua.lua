@@ -1,4 +1,6 @@
-local file = require('file')
+--- @type Mq
+local mq = require 'mq'
+local file = require('utils/file')
 local luaTableConverter = require('utils/lua-table-converter')
 
 ---@class RunningDir
@@ -8,7 +10,7 @@ local RunningDir = {scriptPath = ''}
 function RunningDir:new()
   self.__index = self
   local o = setmetatable({}, self)
-  o.scriptPath = (debug.getinfo(1, "S").source:sub(2)):match("(.*[\\|/]).*$")
+  o.scriptPath = (debug.getinfo(2, "S").source:sub(2)):match("(.*[\\|/]).*$")
   return o
 end
 
@@ -23,6 +25,10 @@ function RunningDir:RelativeToMQLuaPath()
   local relativeUrl = (self.scriptPath:sub(0, #mq.luaDir) == mq.luaDir) and self.scriptPath:sub(#mq.luaDir+1) or self.scriptPath
   if string.sub(relativeUrl, -1, -1) == "/" then
     relativeUrl=string.sub(relativeUrl, 1, -2)
+  end
+
+  if string.sub(relativeUrl, 1, 1) == "\\" then
+    relativeUrl=string.sub(relativeUrl, 2)
   end
 
   return relativeUrl

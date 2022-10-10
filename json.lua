@@ -1,5 +1,5 @@
 local packageMan = require('mq/PackageMan')
-local file = require('file')
+local file = require('utils/file')
 
 local json = packageMan.Require('lua-cjson', 'cjson')
 

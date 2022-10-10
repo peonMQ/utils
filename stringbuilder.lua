@@ -1,4 +1,3 @@
-
 ---@class StringBuilder
 ---@field public Lines string[]
 local StringBuilder = {Lines = {}}

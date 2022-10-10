@@ -1,5 +1,5 @@
-local luautils = require('util/lua')
-local jsonUtil = require('util/json')
+local luautils = require('utils/lua')
+local jsonUtil = require('utils/json')
 
 local next = next
 

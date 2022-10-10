@@ -87,31 +87,31 @@ local function Output(paramLogLevel, message, ...)
 end
 
 ---@param message string
----@param ... string
+---@param ... string|integer
 function Logger.Debug(message, ...)
   Output('debug', message, ...)
 end
 
 ---@param message string
----@param ... string
+---@param ... string|integer
 function Logger.Info(message, ...)
   Output('info', message, ...)
 end
 
 ---@param message string
----@param ... string
+---@param ... string|integer
 function Logger.Warn(message, ...)
   Output('warn', message, ...)
 end
 
 ---@param message string
----@param ... string
+---@param ... string|integer
 function Logger.Error(message, ...)
   Output('error', message, ...)
 end
 
 ---@param message string
----@param ... string
+---@param ... string|integer
 function Logger.Fatal(message, ...)
   Output('fatal', message, ...)
   Terminate()
