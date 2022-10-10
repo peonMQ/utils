@@ -39,6 +39,12 @@ function RunningDir:GetRelativeToMQLuaPath(subDir)
   return relativeUrl.."/"..subDir
 end
 
+function RunningDir:Parent()
+  local immutable = RunningDir:new()
+  immutable.scriptPath = immutable.scriptPath:gsub('([a-zA-Z0-9]*)/$', '')
+  return immutable
+end
+
 ---@generic T : table
 ---@param default T
 ---@param loaded T
