@@ -7,10 +7,10 @@ local luaTableConverter = require('utils/lua-table-converter')
 local RunningDir = {scriptPath = ''}
 
 ---@return RunningDir
-function RunningDir:new()
+function RunningDir:new(level)
   self.__index = self
   local o = setmetatable({}, self)
-  o.scriptPath = (debug.getinfo(2, "S").source:sub(2)):match("(.*[\\|/]).*$")
+  o.scriptPath = (debug.getinfo(level or 2, "S").source:sub(2)):match("(.*[\\|/]).*$")
   return o
 end
 
@@ -40,7 +40,7 @@ function RunningDir:GetRelativeToMQLuaPath(subDir)
 end
 
 function RunningDir:Parent()
-  local immutable = RunningDir:new()
+  local immutable = RunningDir:new(3)
   immutable.scriptPath = immutable.scriptPath:gsub('([a-zA-Z0-9]*)/$', '')
   return immutable
 end
