@@ -91,12 +91,23 @@ local function saveTable(filePath, table)
   file.WriteAllText(filePath, table_text)
 end
 
+---@param t1 table
+---@param t2 table
+---@return table
+local function tableConcat(t1,t2)
+  for i=1,#t2 do
+      t1[#t1+1] = t2[i]
+  end
+  return t1
+end
+
 local utils = {
   LeftJoin = leftJoin,
   Split = split,
   LoadTable = loadTable,
   SaveTable = saveTable,
-  RunningDir = RunningDir
+  RunningDir = RunningDir,
+  TableConcat = tableConcat
 }
 
 return utils
