@@ -1,7 +1,15 @@
 local luautils = require('utils/lua')
 local jsonUtil = require('utils/json')
 
+local configDir = mq.configDir.."/"
+local serverName = mq.TLO.MacroQuest.Server
 local next = next
+
+---@param fileName string
+---@return string
+local function getFilePath(fileName)
+  return string.format("%s/%s/%s.json", configDir, serverName, fileName)
+end
 
 ---@param keys string[]
 ---@param config table
@@ -23,10 +31,11 @@ end
 ---@generic T: table
 ---@param key string
 ---@param default T
----@param filePath string
+---@param filePath? string
 ---@return T
 local function loadConfig(key, default, filePath)
-  local loadedConfig = jsonUtil.LoadJSON(filePath)
+  local configFilePath = getFilePath(filePath or mq.TLO.Me.Name())
+  local loadedConfig = jsonUtil.LoadJSON(configFilePath)
   if key == "" then
     if default then
       return luautils.leftJoin(default, loadedConfig)
