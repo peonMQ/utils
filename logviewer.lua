@@ -18,6 +18,14 @@ local loglevels = {
 
 local selected_character = 0
 
+local showTrace = true
+local showDebug = true
+local showInfo = true
+local showWarn = true
+local showError = true
+local showFatal = true
+local showHelp = true
+
 local characters = sqllogger.GetCharacters()
 
 local comboOptions = ""
@@ -28,7 +36,40 @@ end
 
 local logRows = {}
 local function updateLogData()
-  logRows = sqllogger.GetLatest(characters[selected_character+1])
+  local searchLevels = {}
+  if showTrace then
+    table.insert(searchLevels, 1)
+  end
+
+  if showDebug then
+    table.insert(searchLevels, 2)
+  end
+
+  if showInfo then
+    table.insert(searchLevels, 3)
+  end
+
+  if showWarn then
+    table.insert(searchLevels, 4)
+  end
+
+  if showError then
+    table.insert(searchLevels, 5)
+  end
+
+  if showFatal then
+    table.insert(searchLevels, 6)
+  end
+
+  if showHelp then
+    table.insert(searchLevels, 7)
+  end
+
+  if next(searchLevels) then
+  logRows = sqllogger.GetLatest(characters[selected_character+1], table.concat(searchLevels, ","))
+  else
+    logRows = sqllogger.GetLatest(characters[selected_character+1])
+  end
 end
 
 local function GetLevelColor(level)
@@ -50,6 +91,21 @@ local renderLogViewer = function()
   if shouldDrawGUI then
 
     selected_character = ImGui.Combo('##Character', selected_character, comboOptions)
+ 
+    showTrace, _ = ImGui.Checkbox('Trace', showTrace)
+    ImGui.SameLine()
+    showDebug, _ = ImGui.Checkbox('Debug', showDebug)
+    ImGui.SameLine()
+    showInfo, _ = ImGui.Checkbox('Info', showInfo)
+    ImGui.SameLine()
+    showWarn, _ = ImGui.Checkbox('Warn', showWarn)
+    ImGui.SameLine()
+    showError, _ = ImGui.Checkbox('Error', showError)
+    ImGui.SameLine()
+    showFatal, _ = ImGui.Checkbox('Fatal', showFatal)
+    ImGui.SameLine()
+    showHelp, _ = ImGui.Checkbox('Help', showHelp)
+
     if ImGui.BeginTable('logTable', 3) then
       ImGui.TableSetupColumn('Character', ImGuiTableColumnFlags.WidthFixed, -1.0, ColumnID_Character)
       ImGui.TableSetupColumn('Level', ImGuiTableColumnFlags.WidthFixed, -1.0, ColumnID_Level)

@@ -43,20 +43,20 @@ local function getCharacters()
 end
 
 ---@return table
-local function getLatest(character)
+local function getLatest(character, logLevels)
   local sql = [[
     SELECT * FROM log 
-      WHERE character = '%s'
+      WHERE character = '%s' AND level IN (%s)
       ORDER BY timestamp DESC 
       LIMIT 20
   ]]
 
   local logRows = {}
-  if not character or character == "" then
+  if not character or character == "" or not logLevels or logLevels == "" then
     return logRows
   end
 
-  for logRow in db:nrows(sql:format(character)) do table.insert(logRows, 0, logRow) end
+  for logRow in db:nrows(sql:format(character, logLevels)) do table.insert(logRows, 0, logRow) end
   return logRows
 end
 
