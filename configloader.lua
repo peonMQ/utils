@@ -1,8 +1,11 @@
+--- @type Mq
+local mq = require('mq')
 local luautils = require('utils/lua')
 local jsonUtil = require('utils/json')
+local debug = require('utils/debug')
 
 local configDir = mq.configDir.."/"
-local serverName = mq.TLO.MacroQuest.Server
+local serverName = mq.TLO.MacroQuest.Server()
 local next = next
 
 ---@param fileName string
@@ -38,15 +41,15 @@ local function loadConfig(key, default, filePath)
   local loadedConfig = jsonUtil.LoadJSON(configFilePath)
   if key == "" then
     if default then
-      return luautils.leftJoin(default, loadedConfig)
-    else 
+      return luautils.LeftJoin(default, loadedConfig)
+    else
       return loadedConfig
     end
   end
 
   local keyedConfig = getNestedConfig(luautils.Split(key, '.'), loadedConfig)
   if default then
-    return luautils.leftJoin(default, keyedConfig)
+    return luautils.LeftJoin(default, keyedConfig)
   else
     return keyedConfig
   end

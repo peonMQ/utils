@@ -2,6 +2,7 @@
 local mq = require 'mq'
 local file = require('utils/file')
 local luaTableConverter = require('utils/lua-table-converter')
+local debug = require('utils/debug')
 
 ---@class RunningDir
 local RunningDir = {scriptPath = ''}
@@ -54,7 +55,7 @@ local function leftJoin(default, loaded)
   for key, value in pairs(default) do
     config[key] = value
     local loadedValue = loaded[key]
-    if type(value) == "table" or not value then
+    if type(value) == "table" or value == nil then
       if type(loadedValue or false) == "table" then
         config[key] = leftJoin(default[key] or {}, loadedValue or {})
       end
