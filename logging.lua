@@ -1,5 +1,7 @@
 --- @type Mq
 local mq = require('mq')
+local configLoader = require('utils/configloader')
+local sqllogger = require('utils/sqllogger')
 
 --[[ 
 \ab = black \ag = green \am = maroon \ao = orange \ap = purple \ar = red \at = cyan (or teal) \au = blue \aw = white \ax = default (which will do whatever the previous color was, the one before the last color change) \ay = yellow
@@ -18,12 +20,15 @@ local loglevels = {
   ['help']   = { level = 7, color = '\aw', abbreviation = '[HELP%s]'  },
 }
 
-local config = {
+local defaultConfig = {
   usecolors = true,
   usetimestamp = false,
+  usesql = false,
   loglevel = 'warn',
   separator = '::'
 }
+
+local config = configLoader("logging", defaultConfig)
 
 local Logger = {}
 
@@ -82,6 +87,9 @@ local function Output(paramLogLevel, message, ...)
   if loglevels[config.loglevel:lower()].level <= logLevel.level then
     local logMessage = string.format(message, ...)
     print(string.format('%s %s %s %s', GetAbbreviation(logLevel), config.separator, logMessage, GetCallerString(paramLogLevel)))
+    if config.usesql then
+      sqllogger.Insert(logLevel.level, logMessage)
+    end
     mq.delay(50)
   end
 end
