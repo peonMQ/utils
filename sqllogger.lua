@@ -20,9 +20,9 @@ db:exec[[
 local function clean()
   local sql = [[
     DELETE FROM log a
-      WHERE a.character = %s AND a.id NOT IN (
+      WHERE a.character = '%s' AND a.id NOT IN (
         SELECT b.id FROM log b
-          WHERE b.character = %s 
+          WHERE b.character = '%s'
           ORDER BY b.timestamp DESC LIMIT 99
   )
   ]]
@@ -30,9 +30,33 @@ local function clean()
 end
 
 ---@return table
-local function getLatest()
+local function getCharacters()
+  local sql = [[
+    SELECT DISTINCT character FROM log 
+      ORDER BY character
+  ]]
+
+  local characters = {}
+
+  for character in db:nrows(sql) do table.insert(characters, character.character) end
+  return characters
+end
+
+---@return table
+local function getLatest(character)
+  local sql = [[
+    SELECT * FROM log 
+      WHERE character = '%s'
+      ORDER BY timestamp DESC 
+      LIMIT 20
+  ]]
+
   local logRows = {}
-  for logRow in db:nrows('SELECT * FROM log ORDER BY timestamp DESC LIMIT 20') do table.insert(logRows, 0, logRow) end
+  if not character or character == "" then
+    return logRows
+  end
+
+  for logRow in db:nrows(sql:format(character)) do table.insert(logRows, 0, logRow) end
   return logRows
 end
 
@@ -45,6 +69,7 @@ local function insert(paramLogLevel, logMessage)
 end
 
 local sqllogger = {
+  GetCharacters = getCharacters,
   GetLatest = getLatest,
   Insert = insert
 }

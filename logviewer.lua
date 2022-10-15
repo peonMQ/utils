@@ -1,6 +1,7 @@
 --- @type Mq
 local mq = require 'mq'
 local sqllogger = require('utils/sqllogger')
+local debug = require('utils/debug')
 --- @type ImGui
 require 'ImGui'
 
@@ -15,6 +16,25 @@ local loglevels = {
   [7]  = { color = {1,   1, 1, 1}, abbreviation = '[HELP]'  },
 }
 
+local selected_character = 0
+
+local characters = sqllogger.GetCharacters()
+
+local comboOptions = ""
+for i,name in ipairs(characters) do
+  comboOptions = comboOptions..name.."\0"
+end
+
+
+local logRows = {}
+local function updateLogData()
+  logRows = sqllogger.GetLatest(characters[selected_character+1])
+end
+
+local function GetLevelColor(level)
+  return unpack(loglevels[level].color)
+end
+
 local openGUI = true
 local shouldDrawGUI = true
 local terminate = false
@@ -23,21 +43,13 @@ local ColumnID_Character = 0
 local ColumnID_Level = 1
 local ColumnID_Message = 2
 
-local logRows = {}
-
-local function updateLogData()
-  logRows = sqllogger.GetLatest()
-end
-
-local function GetLevelColor(level)
-  return unpack(loglevels[level].color)
-end
-
 -- ImGui main function for rendering the UI window
 local renderLogViewer = function()
   openGUI, shouldDrawGUI = ImGui.Begin('Log Event Viewer', openGUI)
   ImGui.SetWindowSize(430, 277, ImGuiCond.FirstUseEver)
   if shouldDrawGUI then
+
+    selected_character = ImGui.Combo('##Character', selected_character, comboOptions)
     if ImGui.BeginTable('logTable', 3) then
       ImGui.TableSetupColumn('Character', ImGuiTableColumnFlags.WidthFixed, -1.0, ColumnID_Character)
       ImGui.TableSetupColumn('Level', ImGuiTableColumnFlags.WidthFixed, -1.0, ColumnID_Level)
