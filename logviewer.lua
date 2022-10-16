@@ -27,12 +27,10 @@ local showFatal = true
 local showHelp = true
 
 local characters = sqllogger.GetCharacters()
-
 local comboOptions = ""
 for i,name in ipairs(characters) do
   comboOptions = comboOptions..name.."\0"
 end
-
 
 local logRows = {}
 local function updateLogData()

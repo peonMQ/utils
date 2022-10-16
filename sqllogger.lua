@@ -1,8 +1,19 @@
 local mq = require('mq')
 local packageMan = require('mq/PackageMan')
+local configLoader = require('utils/configloader')
+local debug = require('utils/debug')
 
 local sqlite3 = packageMan.Require('lsqlite3complete')
 -- local db = sqlite3.open('file:memlogdb?mode=memory&cache=shared')
+
+
+
+local defaultConfig = {
+  maxdisplayrows = 20,
+  maxcacherows = 100,
+}
+
+local config = configLoader("logging.logviewer", defaultConfig)
 
 local configDir = mq.configDir.."/"
 local serverName = mq.TLO.MacroQuest.Server()
@@ -23,10 +34,10 @@ local function clean()
       WHERE a.character = '%s' AND a.id NOT IN (
         SELECT b.id FROM log b
           WHERE b.character = '%s'
-          ORDER BY b.timestamp DESC LIMIT 99
+          ORDER BY b.timestamp DESC LIMIT %d
   )
   ]]
-  db:exec(sql:format(mq.TLO.Me.Name()))
+  db:exec(sql:format(mq.TLO.Me.Name(), config.maxcacherows-1))
 end
 
 ---@return table
@@ -36,27 +47,39 @@ local function getCharacters()
       ORDER BY character
   ]]
 
-  local characters = {}
-
-  for character in db:nrows(sql) do table.insert(characters, character.character) end
+  local characters = {"All"}
+  for character in db:urows(sql) do table.insert(characters, character) end
+  debug.PrintTable(characters)
   return characters
 end
 
 ---@return table
 local function getLatest(character, logLevels)
-  local sql = [[
-    SELECT * FROM log 
-      WHERE character = '%s' AND level IN (%s)
-      ORDER BY timestamp DESC 
-      LIMIT 20
-  ]]
-
   local logRows = {}
   if not character or character == "" or not logLevels or logLevels == "" then
     return logRows
   end
 
-  for logRow in db:nrows(sql:format(character, logLevels)) do table.insert(logRows, 0, logRow) end
+  if character == "All" then
+    local sql = [[
+      SELECT * FROM log 
+        WHERE level IN (%s)
+        ORDER BY timestamp DESC 
+        LIMIT %d
+    ]]
+
+    for logRow in db:nrows(sql:format(logLevels, config.maxdisplayrows)) do table.insert(logRows, 1, logRow) end
+    return logRows
+  end
+
+  local sql = [[
+    SELECT * FROM log 
+      WHERE character = '%s' AND level IN (%s)
+      ORDER BY timestamp DESC 
+      LIMIT %d
+  ]]
+
+  for logRow in db:nrows(sql:format(character, logLevels, config.maxdisplayrows)) do table.insert(logRows, 1, logRow) end
   return logRows
 end
 
