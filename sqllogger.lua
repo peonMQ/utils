@@ -49,7 +49,6 @@ local function getCharacters()
 
   local characters = {"All"}
   for character in db:urows(sql) do table.insert(characters, character) end
-  debug.PrintTable(characters)
   return characters
 end
 
