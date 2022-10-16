@@ -4,9 +4,6 @@ local configLoader = require('utils/configloader')
 local debug = require('utils/debug')
 
 local sqlite3 = packageMan.Require('lsqlite3complete')
--- local db = sqlite3.open('file:memlogdb?mode=memory&cache=shared')
-
-
 
 local defaultConfig = {
   maxdisplayrows = 20,
@@ -18,6 +15,9 @@ local config = configLoader("logging.logviewer", defaultConfig)
 local configDir = mq.configDir.."/"
 local serverName = mq.TLO.MacroQuest.Server()
 local db = sqlite3.open(configDir..serverName.."/logDB.sqlite")
+-- http://lua.sqlite.org/index.cgi/doc/tip/doc/lsqlite3.wiki#sqlite3_open
+-- local db = sqlite3.open('file:memlogdb?mode=memory&cache=shared', sqlite3.OPEN_READWRITE + sqlite3.OPEN_CREATE + sqlite3.OPEN_URI)
+
 db:exec[[
   CREATE TABLE IF NOT EXISTS log (
       id INTEGER PRIMARY KEY
@@ -37,7 +37,7 @@ local function clean()
           ORDER BY b.timestamp DESC LIMIT %d
   )
   ]]
-  db:exec(sql:format(mq.TLO.Me.Name(), config.maxcacherows-1))
+  db:exec(sql:format(mq.TLO.Me.Name(), mq.TLO.Me.Name(), config.maxcacherows-1))
 end
 
 ---@return table
