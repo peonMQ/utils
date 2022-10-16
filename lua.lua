@@ -55,9 +55,13 @@ local function leftJoin(default, loaded)
   for key, value in pairs(default) do
     config[key] = value
     local loadedValue = loaded[key]
-    if type(value) == "table" or value == nil then
+    if type(value) == "table" then
       if type(loadedValue or false) == "table" then
-        config[key] = leftJoin(default[key] or {}, loadedValue or {})
+        if next(value) then
+          config[key] = leftJoin(default[key] or {}, loadedValue or {})
+        else
+          config[key] = loadedValue
+        end
       end
     elseif type(value) == type(loadedValue) then
       config[key] = loadedValue
