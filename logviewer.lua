@@ -17,6 +17,7 @@ local loglevels = {
 }
 
 local selected_character = 0
+local selected_character_name = ""
 
 local showTrace = true
 local showDebug = true
@@ -26,11 +27,21 @@ local showError = true
 local showFatal = true
 local showHelp = true
 
-local characters = sqllogger.GetCharacters()
+local characters = {}
 local comboOptions = ""
-for i,name in ipairs(characters) do
-  comboOptions = comboOptions..name.."\0"
+
+local function updateCharacters()
+  characters = sqllogger.GetCharacters()
+  comboOptions = ""
+  for i,name in ipairs(characters) do
+    comboOptions = comboOptions..name.."\0"
+    if name == selected_character_name then
+      selected_character = i-1
+    end
+  end
 end
+
+updateCharacters()
 
 local logRows = {}
 local function updateLogData()
@@ -89,6 +100,7 @@ local renderLogViewer = function()
   if shouldDrawGUI then
 
     selected_character = ImGui.Combo('##Character', selected_character, comboOptions)
+    selected_character_name = characters[selected_character+1]
  
     showTrace, _ = ImGui.Checkbox('Trace', showTrace)
     ImGui.SameLine()
@@ -137,6 +149,7 @@ end
 mq.imgui.init('logviewer', renderLogViewer)
 
 while not terminate do
+  updateCharacters()
   updateLogData()
   mq.delay(500)
 end

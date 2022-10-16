@@ -14,7 +14,7 @@ local config = configLoader("logging.logviewer", defaultConfig)
 
 local configDir = mq.configDir.."/"
 local serverName = mq.TLO.MacroQuest.Server()
-local db = sqlite3.open(configDir..serverName.."/logDB.sqlite")
+local db = sqlite3.open(configDir:gsub("\\", "/")..serverName.."/logDB.sqlite")
 -- http://lua.sqlite.org/index.cgi/doc/tip/doc/lsqlite3.wiki#sqlite3_open
 -- local db = sqlite3.open('file:memlogdb?mode=memory&cache=shared', sqlite3.OPEN_READWRITE + sqlite3.OPEN_CREATE + sqlite3.OPEN_URI)
 
@@ -37,7 +37,13 @@ local function clean()
           ORDER BY b.timestamp DESC LIMIT %d
   )
   ]]
-  db:exec(sql:format(mq.TLO.Me.Name(), mq.TLO.Me.Name(), config.maxcacherows-1))
+
+  local executed = false
+  while not executed do
+    executed = pcall(function()
+      db:exec(sql:format(mq.TLO.Me.Name(), mq.TLO.Me.Name(), config.maxcacherows-1))
+    end)
+  end
 end
 
 ---@return table
@@ -48,7 +54,13 @@ local function getCharacters()
   ]]
 
   local characters = {"All"}
-  for character in db:urows(sql) do table.insert(characters, character) end
+  local executed = false
+  while not executed do
+    executed = pcall(function() 
+      for character in db:urows(sql) do table.insert(characters, character) end
+    end)
+  end
+
   return characters
 end
 
@@ -66,8 +78,13 @@ local function getLatest(character, logLevels)
         ORDER BY timestamp DESC 
         LIMIT %d
     ]]
+    local executed = false
+    while not executed do
+      executed = pcall(function()
+        for logRow in db:nrows(sql:format(logLevels, config.maxdisplayrows)) do table.insert(logRows, 1, logRow) end
+      end)
+    end
 
-    for logRow in db:nrows(sql:format(logLevels, config.maxdisplayrows)) do table.insert(logRows, 1, logRow) end
     return logRows
   end
 
@@ -78,7 +95,13 @@ local function getLatest(character, logLevels)
       LIMIT %d
   ]]
 
-  for logRow in db:nrows(sql:format(character, logLevels, config.maxdisplayrows)) do table.insert(logRows, 1, logRow) end
+  local executed = false
+  while not executed do
+    executed = pcall(function()
+      for logRow in db:nrows(sql:format(character, logLevels, config.maxdisplayrows)) do table.insert(logRows, 1, logRow) end
+    end)
+  end
+
   return logRows
 end
 
@@ -87,7 +110,12 @@ end
 local function insert(paramLogLevel, logMessage)
   clean()
   local insertStatement = string.format("INSERT INTO log(character, level, message, timestamp) VALUES('%s', %d, '%s', %d)", mq.TLO.Me.Name(), paramLogLevel, logMessage, os.time())
-  db:exec(insertStatement)
+  local executed = false
+  while not executed do
+    executed = pcall(function() 
+      db:exec(insertStatement)
+    end)
+  end
 end
 
 local sqllogger = {
