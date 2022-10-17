@@ -27,6 +27,9 @@ local db = sqlite3.open(connectingString, sqlite3.OPEN_READWRITE + sqlite3.OPEN_
 --   end
 -- end
 
+-- http://lua.sqlite.org/index.cgi/doc/tip/doc/lsqlite3.wiki#db_exec
+-- http://lua.sqlite.org/index.cgi/doc/tip/doc/lsqlite3.wiki#numerical_error_and_result_codes
+
 db:exec[[
   PRAGMA journal_mode=WAL;
   CREATE TABLE IF NOT EXISTS log (
@@ -106,7 +109,17 @@ end
 local function insert(paramLogLevel, logMessage)
   vacuumMaxRows()
   local insertStatement = string.format("INSERT INTO log(character, level, message, timestamp) VALUES('%s', %d, '%s', %d)", mq.TLO.Me.Name(), paramLogLevel, logMessage, os.time())
-  db:exec(insertStatement)
+  local retries = 0
+  local result = db:exec(insertStatement)
+  while result ~= 0 and retries < 20 do
+    mq.delay(10)
+    retries = retries + 1
+    result = db:exec(insertStatement)
+  end
+
+  if result ~= 0 then
+    print("Failed <"..insertStatement..">")
+  end
 end
 
 local sqllogger = {
