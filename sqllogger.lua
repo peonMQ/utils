@@ -3,7 +3,7 @@ local packageMan = require('mq/PackageMan')
 local configLoader = require('utils/configloader')
 local debug = require('utils/debug')
 
-local sqlite3 = packageMan.Require('lsqlite3complete')
+local sqlite3 = packageMan.Require('lsqlite3')
 
 local defaultConfig = {
   maxdisplayrows = 20,
@@ -12,9 +12,11 @@ local defaultConfig = {
 
 local config = configLoader("logging.logviewer", defaultConfig)
 
-local configDir = mq.configDir.."/"
+local configDir = (mq.configDir.."/"):gsub("\\", "/"):gsub("%s+", "%%20")
 local serverName = mq.TLO.MacroQuest.Server()
-local db = sqlite3.open(configDir:gsub("\\", "/")..serverName.."/logDB.sqlite")
+local dbFileName = configDir..serverName.."/data/logDB.db"
+local connectingString = string.format("file:///%s?cache=shared&mode=rwc&_journal_mode=WAL", dbFileName)
+local db = sqlite3.open(connectingString, sqlite3.OPEN_READWRITE + sqlite3.OPEN_CREATE + sqlite3.OPEN_URI)
 -- http://lua.sqlite.org/index.cgi/doc/tip/doc/lsqlite3.wiki#sqlite3_open
 -- local db = sqlite3.open('file:memlogdb?mode=memory&cache=shared', sqlite3.OPEN_READWRITE + sqlite3.OPEN_CREATE + sqlite3.OPEN_URI)
 
@@ -38,12 +40,13 @@ local function clean()
   )
   ]]
 
-  local executed = false
-  while not executed do
-    executed = pcall(function()
-      db:exec(sql:format(mq.TLO.Me.Name(), mq.TLO.Me.Name(), config.maxcacherows-1))
-    end)
-  end
+  -- local executed = false
+  -- while not executed do
+  --   executed = pcall(function()
+  --     db:exec(sql:format(mq.TLO.Me.Name(), mq.TLO.Me.Name(), config.maxcacherows-1))
+  --   end)
+  -- end
+  db:exec(sql:format(mq.TLO.Me.Name(), mq.TLO.Me.Name(), config.maxcacherows-1))
 end
 
 ---@return table
@@ -54,13 +57,14 @@ local function getCharacters()
   ]]
 
   local characters = {"All"}
-  local executed = false
-  while not executed do
-    executed = pcall(function() 
-      for character in db:urows(sql) do table.insert(characters, character) end
-    end)
-  end
+  -- local executed = false
+  -- while not executed do
+  --   executed = pcall(function() 
+  --     for character in db:urows(sql) do table.insert(characters, character) end
+  --   end)
+  -- end
 
+  for character in db:urows(sql) do table.insert(characters, character) end
   return characters
 end
 
@@ -79,12 +83,13 @@ local function getLatest(character, logLevels)
         LIMIT %d
     ]]
     local executed = false
-    while not executed do
-      executed = pcall(function()
-        for logRow in db:nrows(sql:format(logLevels, config.maxdisplayrows)) do table.insert(logRows, 1, logRow) end
-      end)
-    end
+    -- while not executed do
+    --   executed = pcall(function()
+    --     for logRow in db:nrows(sql:format(logLevels, config.maxdisplayrows)) do table.insert(logRows, 1, logRow) end
+    --   end)
+    -- end
 
+    for logRow in db:nrows(sql:format(logLevels, config.maxdisplayrows)) do table.insert(logRows, 1, logRow) end
     return logRows
   end
 
@@ -95,13 +100,14 @@ local function getLatest(character, logLevels)
       LIMIT %d
   ]]
 
-  local executed = false
-  while not executed do
-    executed = pcall(function()
-      for logRow in db:nrows(sql:format(character, logLevels, config.maxdisplayrows)) do table.insert(logRows, 1, logRow) end
-    end)
-  end
+  -- local executed = false
+  -- while not executed do
+  --   executed = pcall(function()
+  --     for logRow in db:nrows(sql:format(character, logLevels, config.maxdisplayrows)) do table.insert(logRows, 1, logRow) end
+  --   end)
+  -- end
 
+  for logRow in db:nrows(sql:format(character, logLevels, config.maxdisplayrows)) do table.insert(logRows, 1, logRow) end
   return logRows
 end
 
@@ -110,12 +116,13 @@ end
 local function insert(paramLogLevel, logMessage)
   clean()
   local insertStatement = string.format("INSERT INTO log(character, level, message, timestamp) VALUES('%s', %d, '%s', %d)", mq.TLO.Me.Name(), paramLogLevel, logMessage, os.time())
-  local executed = false
-  while not executed do
-    executed = pcall(function() 
-      db:exec(insertStatement)
-    end)
-  end
+  -- local executed = false
+  -- while not executed do
+  --   executed = pcall(function() 
+  --     db:exec(insertStatement)
+  --   end)
+  -- end
+  db:exec(insertStatement)
 end
 
 local sqllogger = {
