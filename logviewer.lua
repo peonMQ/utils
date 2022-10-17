@@ -31,13 +31,20 @@ local characters = {}
 local comboOptions = ""
 
 local function updateCharacters()
+  local foundPreviousSelected = false
   characters = sqllogger.GetCharacters()
   comboOptions = ""
   for i,name in ipairs(characters) do
     comboOptions = comboOptions..name.."\0"
     if name == selected_character_name then
       selected_character = i-1
+      foundPreviousSelected = true
     end
+  end
+
+  if not foundPreviousSelected then
+    selected_character = 0
+    selected_character_name = characters[selected_character+1]
   end
 end
 
@@ -101,6 +108,10 @@ local renderLogViewer = function()
 
     selected_character = ImGui.Combo('##Character', selected_character, comboOptions)
     selected_character_name = characters[selected_character+1]
+    ImGui.SameLine()
+    if ImGui.Button("Delete") then
+      sqllogger.Delete(selected_character_name)
+    end
  
     showTrace, _ = ImGui.Checkbox('Trace', showTrace)
     ImGui.SameLine()
