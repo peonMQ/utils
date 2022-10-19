@@ -96,6 +96,12 @@ end
 
 ---@param message string
 ---@param ... string|integer
+function Logger.Trace(message, ...)
+  Output('trace', message, ...)
+end
+
+---@param message string
+---@param ... string|integer
 function Logger.Debug(message, ...)
   Output('debug', message, ...)
 end
