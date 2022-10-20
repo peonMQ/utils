@@ -1,6 +1,11 @@
 local packageMan = require('mq/PackageMan')
 local lfs = packageMan.Require('luafilesystem', 'lfs')
 
+-- http://lua-users.org/wiki/StringRecipes
+local function endsWith(str, ending)
+  return ending == "" or str:sub(-#ending) == ending
+end
+
 local windows = package.config:sub(1,1) == "\\"
 
 -- We make the simplifying assumption in these functions that path separators
@@ -81,7 +86,11 @@ end
 ---@param text string
 ---@return boolean
 local function writeAllText(filePath, text)
-  lfs.rmkdir(filePath)
+  if endsWith(filePath, ".lua") then
+    lfs.mkdir(filePath:gsub("%/[%a%d]*%.lua$", ""))
+  else
+    lfs.rmkdir(filePath)
+  end
 
   local file, e = io.open(filePath, "w");
   if not file then

@@ -11,11 +11,11 @@ function StringBuilder:new ()
 end
 
 function StringBuilder:Append(string)
-  table.insert(self.Lines, string);
+  table.insert(self.Lines, string)
 end
 
 function StringBuilder:AppendLine(string)
-  table.insert(self.Lines, string.."\n");
+  table.insert(self.Lines, string.."\n")
 end
 
 function StringBuilder:__tostring()

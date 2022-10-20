@@ -54,7 +54,7 @@ local converter =
 			stringbuilder:Append("return\n")
 		end
 
-		return tostring(stringBuilder)
+		return tostring(stringbuilder)
 	end,
 
 	fromString = function (tableString)
