@@ -23,7 +23,7 @@ local converter =
 			if count > 1 then
 				objRefIdx = objRefIdx + 1
 				objRefNames[obj] = objRefIdx
-				stringbuilder:Append("{}") -- table objRefIdx
+				stringbuilder:Append("{};") -- table objRefIdx
 			end
 		end
 		stringbuilder:Append("\n} -- multiRefObjects\n")
@@ -34,7 +34,7 @@ local converter =
 				write(stringbuilder, k, 0, objRefNames)
 				stringbuilder:Append("] = ")
 				write(stringbuilder, v, 0, objRefNames)
-				stringbuilder:Append("\n")
+				stringbuilder:Append(";\n")
 			end
 		end
 		-- Create the remaining objects
@@ -130,7 +130,7 @@ writers = {
 					write(stringbuilder, k, level+1, objRefNames)
 					stringbuilder:Append("] = ")
 					write(stringbuilder, v, level+1, objRefNames)
-					stringbuilder:Append("\n")
+					stringbuilder:Append(";\n")
 				end
 				writeIndent(stringbuilder, level)
 				stringbuilder:Append("}")
