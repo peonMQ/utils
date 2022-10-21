@@ -8,6 +8,10 @@ local json = packageMan.Require('lua-cjson', 'cjson')
 ---@return T
 local function loadJSON(filePath)
   local json_text = file.ReadAllText(filePath)
+  if not json_text or json_text == "" then
+    json_text = "{}"
+  end
+
   return json.decode(json_text)
 end
 
