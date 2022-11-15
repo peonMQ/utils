@@ -33,7 +33,7 @@ end
 
 ---@generic T: table
 ---@param key string
----@param default T
+---@param default? T
 ---@param filePath? string
 ---@return T
 local function loadConfig(key, default, filePath)
