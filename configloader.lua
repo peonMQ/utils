@@ -1,6 +1,6 @@
 --- @type Mq
 local mq = require('mq')
-local luautils = require('utils/lua')
+local luautils = require('utils/luahelpers')
 local jsonUtil = require('utils/json')
 local debug = require('utils/debug')
 
