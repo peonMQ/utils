@@ -42,3 +42,9 @@ function RunningDir:Parent()
   immutable.scriptPath = immutable.scriptPath:gsub('([a-zA-Z0-9]*)/$', '')
   return immutable
 end
+
+local utils = {
+  RunningDir = RunningDir,
+}
+
+return utils
