@@ -1,7 +1,7 @@
 --- @type Mq
 local mq = require('mq')
-local luautils = require('utils/luahelpers')
-local jsonUtil = require('utils/json')
+local luautils = require('utils/lua-table')
+local jsonUtil = require('utils/loaders/json')
 local debug = require('utils/debug')
 
 local configDir = mq.configDir.."/"
