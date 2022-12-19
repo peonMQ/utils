@@ -48,6 +48,21 @@ local function tableConcat(t1,t2)
   return t1
 end
 
+---@generic T string|number
+---@param table T[]
+---@param value T
+---@return boolean
+local function containsValue(table, value)
+  for _, tableValue in pairs(table) do
+    if tableValue == value then
+      return true
+    end
+  end
+
+  return false
+end
+
+
 
 ---@param table table
 ---@return string
@@ -64,6 +79,7 @@ end
 
 local utils = {
   LeftJoin = leftJoin,
+  ContainsValue = containsValue,
   Split = split,
   TableConcat = tableConcat,
   GetKeysSorted = getKeysSorted
