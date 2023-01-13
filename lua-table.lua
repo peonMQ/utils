@@ -63,11 +63,26 @@ local function containsValue(table, value)
 end
 
 
+
+---@param table table
+---@return string
+local function getKeysSorted(table)
+  if type(table) ~= 'table' then return "" end
+  local keyset={}
+  for k,v in pairs(table) do
+    table.insert(keyset, k)
+  end
+
+  table.sort(keyset)
+  return table.concat(keyset, ", ")
+end
+
 local utils = {
   LeftJoin = leftJoin,
   ContainsValue = containsValue,
   Split = split,
-  TableConcat = tableConcat
+  TableConcat = tableConcat,
+  GetKeysSorted = getKeysSorted
 }
 
 return utils
