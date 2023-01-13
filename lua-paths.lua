@@ -34,7 +34,7 @@ end
 
 function RunningDir:GetRelativeToMQLuaPath(subDir)
   local relativeUrl = self:RelativeToMQLuaPath()
-  return relativeUrl.."/"..subDir
+  return relativeUrl..subDir
 end
 
 function RunningDir:Parent()
