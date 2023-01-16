@@ -112,7 +112,8 @@ end
 local file = {
   ReadAllText = readAllText,
   WriteAllText = writeAllText,
-  EnsurePathExists = ensurePathExists
+  EnsurePathExists = ensurePathExists,
+  Exists = lfs.exists
 }
 
 return file
