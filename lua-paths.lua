@@ -1,5 +1,4 @@
---- @type Mq
-local mq = require 'mq'
+local mq = require('mq')
 
 ---@class RunningDir
 local RunningDir = {scriptPath = ''}

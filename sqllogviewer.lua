@@ -1,9 +1,7 @@
---- @type Mq
 local mq = require 'mq'
 local sqllogger = require('utils/sqllogger')
 local debug = require('utils/debug')
---- @type ImGui
-require 'ImGui'
+local imgui = require 'ImGui'
 
 -- see MQ2ImGuiConsole.cpp linenumber 174
 local loglevels = {
@@ -102,55 +100,55 @@ local ColumnID_Message = 2
 
 -- ImGui main function for rendering the UI window
 local renderLogViewer = function()
-  openGUI, shouldDrawGUI = ImGui.Begin('Log Event Viewer', openGUI)
-  ImGui.SetWindowSize(430, 277, ImGuiCond.FirstUseEver)
+  openGUI, shouldDrawGUI = imgui.Begin('Log Event Viewer', openGUI)
+  imgui.SetWindowSize(430, 277, ImGuiCond.FirstUseEver)
   if shouldDrawGUI then
 
-    selected_character = ImGui.Combo('##Character', selected_character, comboOptions)
+    selected_character = imgui.Combo('##Character', selected_character, comboOptions)
     selected_character_name = characters[selected_character+1]
-    ImGui.SameLine()
-    if ImGui.Button("Delete") then
+    imgui.SameLine()
+    if imgui.Button("Delete") then
       sqllogger.Delete(selected_character_name)
     end
  
-    showTrace, _ = ImGui.Checkbox('Trace', showTrace)
-    ImGui.SameLine()
-    showDebug, _ = ImGui.Checkbox('Debug', showDebug)
-    ImGui.SameLine()
-    showInfo, _ = ImGui.Checkbox('Info', showInfo)
-    ImGui.SameLine()
-    showWarn, _ = ImGui.Checkbox('Warn', showWarn)
-    ImGui.SameLine()
-    showError, _ = ImGui.Checkbox('Error', showError)
-    ImGui.SameLine()
-    showFatal, _ = ImGui.Checkbox('Fatal', showFatal)
-    ImGui.SameLine()
-    showHelp, _ = ImGui.Checkbox('Help', showHelp)
+    showTrace, _ = imgui.Checkbox('Trace', showTrace)
+    imgui.SameLine()
+    showDebug, _ = imgui.Checkbox('Debug', showDebug)
+    imgui.SameLine()
+    showInfo, _ = imgui.Checkbox('Info', showInfo)
+    imgui.SameLine()
+    showWarn, _ = imgui.Checkbox('Warn', showWarn)
+    imgui.SameLine()
+    showError, _ = imgui.Checkbox('Error', showError)
+    imgui.SameLine()
+    showFatal, _ = imgui.Checkbox('Fatal', showFatal)
+    imgui.SameLine()
+    showHelp, _ = imgui.Checkbox('Help', showHelp)
 
-    if ImGui.BeginTable('logTable', 3) then
-      ImGui.TableSetupColumn('Character', ImGuiTableColumnFlags.WidthFixed, -1.0, ColumnID_Character)
-      ImGui.TableSetupColumn('Level', ImGuiTableColumnFlags.WidthFixed, -1.0, ColumnID_Level)
-      ImGui.TableSetupColumn('Message', ImGuiTableColumnFlags.WidthFixed, -1.0, ColumnID_Message)
+    if imgui.BeginTable('logTable', 3) then
+      imgui.TableSetupColumn('Character', ImGuiTableColumnFlags.WidthFixed, -1.0, ColumnID_Character)
+      imgui.TableSetupColumn('Level', ImGuiTableColumnFlags.WidthFixed, -1.0, ColumnID_Level)
+      imgui.TableSetupColumn('Message', ImGuiTableColumnFlags.WidthFixed, -1.0, ColumnID_Message)
     end
 
-    ImGui.TableHeadersRow()
+    imgui.TableHeadersRow()
 
     for _, logRow in ipairs(logRows) do
-      ImGui.TableNextRow()
-      ImGui.TableNextColumn()
-      ImGui.Text(logRow.character)
-      ImGui.TableNextColumn()
-      ImGui.PushStyleColor(ImGuiCol.Text, GetLevelColor(logRow.level))
-      ImGui.Text(loglevels[logRow.level].abbreviation)
-      ImGui.PopStyleColor(1)
-      ImGui.TableNextColumn()
-      ImGui.Text(logRow.message)
+      imgui.TableNextRow()
+      imgui.TableNextColumn()
+      imgui.Text(logRow.character)
+      imgui.TableNextColumn()
+      imgui.PushStyleColor(ImGuiCol.Text, GetLevelColor(logRow.level))
+      imgui.Text(loglevels[logRow.level].abbreviation)
+      imgui.PopStyleColor(1)
+      imgui.TableNextColumn()
+      imgui.Text(logRow.message)
     end
 
-    ImGui.EndTable()
+    imgui.EndTable()
   end
 
-  ImGui.End()
+  imgui.End()
 
   if not openGUI then
       terminate = true

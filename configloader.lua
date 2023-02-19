@@ -1,4 +1,3 @@
---- @type Mq
 local mq = require('mq')
 local luautils = require('utils/lua-table')
 local jsonUtil = require('utils/loaders/json')
