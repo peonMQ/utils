@@ -1,5 +1,5 @@
-local file = require('utils/file')
-local luaTableConverter = require('utils/lua-table-converter')
+local file = require 'utils/file'
+local luaTableConverter = require 'utils/lua-table-converter'
 
 ---@generic T : table
 ---@param filePath string

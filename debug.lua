@@ -1,4 +1,4 @@
-local mq = require('mq')
+local mq = require 'mq'
 
 local function printMemberItem(index, member, memberType, memberValue, depth)
    print(string.format('%s%d. %s (%s) [%s]', string.rep('\t',depth), index, member, memberType, tostring(memberValue)))

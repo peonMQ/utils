@@ -1,5 +1,5 @@
-local mq = require('mq')
-local logger = require('utils/logging')
+local mq = require 'mq'
+local logger = require 'utils/logging'
 
 local possibleAggroAnimations = {5,8,12,17,18,32,42,44,80,106,129,144}
 

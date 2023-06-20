@@ -1,6 +1,6 @@
 local mq = require 'mq'
-local sqllogger = require('utils/sqllogger')
-local debug = require('utils/debug')
+local sqllogger = require 'utils/sqllogger'
+local debug = require 'utils/debug'
 local imgui = require 'ImGui'
 
 -- see MQ2ImGuiConsole.cpp linenumber 174

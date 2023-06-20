@@ -1,5 +1,5 @@
 --- @type StringBuilder
-local stringBuilder = require('utils/stringbuilder')
+local stringBuilder = require 'utils/stringbuilder'
 
 local write, writeIndent, writers, refCount
 

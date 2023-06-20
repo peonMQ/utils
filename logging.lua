@@ -1,6 +1,6 @@
-local mq = require('mq')
-local configLoader = require('utils/configloader')
-local sqllogger = require('utils/sqllogger')
+local mq = require 'mq'
+local configLoader = require 'utils/configloader'
+local sqllogger = require 'utils/sqllogger'
 
 --[[ 
 \ab = black \ag = green \am = maroon \ao = orange \ap = purple \ar = red \at = cyan (or teal) \au = blue \aw = white \ax = default (which will do whatever the previous color was, the one before the last color change) \ay = yellow

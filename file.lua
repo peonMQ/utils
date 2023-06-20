@@ -1,4 +1,4 @@
-local packageMan = require('mq/PackageMan')
+local packageMan = require 'mq/PackageMan'
 local lfs = packageMan.Require('luafilesystem', 'lfs')
 
 -- http://lua-users.org/wiki/StringRecipes
