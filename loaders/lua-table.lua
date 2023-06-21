@@ -13,8 +13,7 @@ end
 ---@param filePath string
 ---@param table T
 local function saveTable(filePath, table)
-  local table_text = luaTableConverter.toString(table)
-  file.WriteAllText(filePath, table_text)
+  mq.pickle(filePath, table)
 end
 
 local utils = {

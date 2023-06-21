@@ -77,9 +77,9 @@ local function readAllText(filePath)
     return ""
   end
 
-  local json_text = file:read("*a")
+  local text = file:read("*a")
   io.close(file)
-  return json_text
+  return text
 end
 
 ---@param filePath string
