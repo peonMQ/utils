@@ -24,6 +24,10 @@ function RunningDir:RelativeToMQLuaPath()
     relativeUrl=string.sub(relativeUrl, 1, -2)
   end
 
+  if string.sub(relativeUrl, -1, -1) == "\\" then
+    relativeUrl=string.sub(relativeUrl, 1, -2)
+  end
+
   if string.sub(relativeUrl, 1, 1) == "\\" then
     relativeUrl=string.sub(relativeUrl, 2)
   end
