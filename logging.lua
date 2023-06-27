@@ -89,7 +89,6 @@ local function Output(paramLogLevel, message, ...)
     if config.usesql then
       sqllogger.Insert(logLevel.level, logMessage)
     end
-    mq.delay(50)
   end
 end
 
