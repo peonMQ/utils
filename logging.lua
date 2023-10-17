@@ -3,6 +3,8 @@ local configLoader = require 'utils/configloader'
 local sqllogger = require 'utils/sqllogger'
 
 --[[ 
+https://docs.macroquest.org/reference/commands/echo/
+
 \ab = black \ag = green \am = maroon \ao = orange \ap = purple \ar = red \at = cyan (or teal) \au = blue \aw = white \ax = default (which will do whatever the previous color was, the one before the last color change) \ay = yellow
 
 You can put a - in front of any of those, to make it 'dark'. The general effect of it is: \a-b no effect really, still black! \a-g = dark green \a-m = dark maroon \a-o = dark orange (looks brown to me) \a-p = dark purple \a-r = dark red \a-t = dark cyan \a-u = dark blue \a-w = gray \a-x = same as \ax \a-y = dark yellow (looks gold) 
@@ -24,7 +26,8 @@ local defaultConfig = {
   usetimestamp = false,
   usesql = false,
   loglevel = 'warn',
-  separator = '::'
+  separator = '::',
+  prefix = ''
 }
 
 local config = configLoader("logging", defaultConfig)
@@ -80,12 +83,20 @@ local function GetAbbreviation(logLevel)
   return string.format("%s%s%s", GetColorStart(logLevel), abbreviation, GetColorEnd())
 end
 
+local function GetPrefix()
+  if config.prefix then
+    return string.format("\a-u%s\ax", config.prefix)
+  end
+
+  return ""
+end
+
 
 local function Output(paramLogLevel, message, ...)
   local logLevel = loglevels[paramLogLevel]
   if loglevels[config.loglevel:lower()].level <= logLevel.level then
     local logMessage = string.format(message, ...)
-    print(string.format('%s %s %s %s', GetAbbreviation(logLevel), config.separator, logMessage, GetCallerString(paramLogLevel)))
+    print(string.format('%s%s %s %s %s', GetPrefix(), GetAbbreviation(logLevel), config.separator, logMessage, GetCallerString(paramLogLevel)))
     if config.usesql then
       sqllogger.Insert(logLevel.level, logMessage)
     end
