@@ -6,8 +6,12 @@ local luaTableConverter = require 'utils/lua-table-converter'
 ---@param filePath string
 ---@return T
 local function loadTable(filePath)
-  local table_text = file.ReadAllText(filePath)
-  return luaTableConverter.fromString(table_text)
+  local file = loadfile(filePath)
+  if file then
+      return file()
+  end
+
+  return {}
 end
 
 ---@generic T : table
