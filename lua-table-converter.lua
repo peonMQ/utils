@@ -58,7 +58,7 @@ local converter =
 	end,
 
 	fromString = function (tableString)
-		if tableString then
+		if tableString and tableString ~= "" then
 			return tableString()
 		end
 
