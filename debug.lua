@@ -25,7 +25,8 @@ local function listMembers(datatype, dataTypePath, depth)
 end
 
 ---@param node table
-local function printTable(node)
+---@param printFunctions boolean|nil
+local function toStringTable(node, printFunctions)
   local cache, stack, output = {},{},{}
   local depth = 1
   local output_str = "{\n"
@@ -64,7 +65,7 @@ local function printTable(node)
           table.insert(stack,v)
           cache[node] = cur_index+1
           break
-        else
+        elseif type(v) ~= "function" or printFunctions then
           output_str = output_str .. string.rep('\t',depth) .. key .. " = '"..tostring(v).."'"
         end
 
@@ -100,11 +101,16 @@ local function printTable(node)
   table.insert(output,output_str)
   output_str = table.concat(output)
 
-  print(output_str)
+  return output_str
+end
+
+local function printTable(table)
+  print(toStringTable(table))
 end
 
 local debug = {
   ListMembers = listMembers,
+  ToString = toStringTable,
   PrintTable = printTable
 }
 
