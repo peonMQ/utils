@@ -1,21 +1,15 @@
 local mq = require 'mq'
 
 ---@class RunningDir
-local RunningDir = {scriptPath = ''}
+local RunningDir = {scriptPath = '', level = 2}
 
 ---@return RunningDir
 function RunningDir:new(level)
   self.__index = self
   local o = setmetatable({}, self)
+  o.level = level or 2
   o.scriptPath = (debug.getinfo(level or 2, "S").source:sub(2)):match("(.*[\\|/]).*$")
   return o
-end
-
-function RunningDir:AppendToPackagePath()
-  local package_path_inc = self.scriptPath .. '?.lua'
-  if not string.find(package.path, package_path_inc) then
-      package.path = package_path_inc .. ';' .. package.path
-  end
 end
 
 function RunningDir:RelativeToMQLuaPath()
@@ -41,7 +35,7 @@ function RunningDir:GetRelativeToMQLuaPath(subDir)
 end
 
 function RunningDir:Parent()
-  local immutable = RunningDir:new(3)
+  local immutable = RunningDir:new(self.level + 1)
   immutable.scriptPath = immutable.scriptPath:gsub('([a-zA-Z0-9]*)/$', '')
   return immutable
 end
