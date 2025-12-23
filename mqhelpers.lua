@@ -43,7 +43,7 @@ end
 
 local function ensureTarget(targetId)
   if not targetId then
-    logger.Debug("Invalid <targetId>")    
+    logger.Debug("Invalid <targetId>")
     return false
   end
 
@@ -57,6 +57,15 @@ local function ensureTarget(targetId)
   end
 
   return mq.TLO.Target.ID() == targetId
+end
+
+local function ensureClearTarget()
+  if mq.TLO.Target.ID() then
+      mq.cmd("/cleartarget")
+      mq.delay("3s", function() return not mq.TLO.Target.ID() end)
+  end
+
+  return not mq.TLO.Target.ID()
 end
 
 local function npcInRange(radius)
@@ -73,10 +82,10 @@ local function npcInRange(radius)
       logger.Debug("%s is possibly an aggressive, mob in camp.", nearestSpawn.Name())
         return true
     end
-   
+
     -- local npcAnimation = mq.TLO.NearestSpawn(i, query).Animation()
-    -- for key, value in pairs(aggroAnimation) do 
-    --   if value == npcAnimation then return true end 
+    -- for key, value in pairs(aggroAnimation) do
+    --   if value == npcAnimation then return true end
     -- end
   end
 
@@ -86,6 +95,7 @@ end
 local Utils = {
   ClearCursor = clearCursor,
   EnsureTarget = ensureTarget,
+  EnsureClearTarget = ensureClearTarget,
   NPCInRange = npcInRange,
   IsMaybeAggressive = isMaybeAggressive
 }
