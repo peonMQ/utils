@@ -1,6 +1,9 @@
 local mq = require 'mq'
 local logger = require 'utils/logging'
 
+-- Consolidate with these lists
+-- https://www.eqemulator.org/forums/showthread.php?t=15238
+-- https://docs.macroquest.org/reference/general/animations/
 local possibleAggroAnimations = {5,8,12,17,18,32,42,44,80,106,129,144}
 
 ---@param spawn spawn
